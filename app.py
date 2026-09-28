@@ -1,17 +1,14 @@
 import streamlit as st
-import ollama
 
 st.set_page_config(page_title="AI Chat", page_icon="🤖")
 
 st.title("🤖 Welcome to AI Chat")
 st.write("Enter your prompt and click **Generate**.")
 
-
 if "list" not in st.session_state:
     st.session_state.list = []
 
 list = st.session_state.list
-
 
 for i in list:
     if i["role"] == "user":
@@ -22,7 +19,7 @@ for i in list:
 question = st.text_input("Enter your prompt:")
 
 if st.button("Generate"):
-    
+
     if not question.strip():
         st.error("Did not type anything")
     else:
@@ -33,21 +30,19 @@ if st.button("Generate"):
             "content": question
         })
 
-        # Display the user's prompt again
         st.chat_message("user").write(question)
 
-        # Generate AI response using the original Ollama logic
-        with st.chat_message("assistant"):
-            response = ollama.chat(
-                model="llama3.2",
-                messages=list
-            )
+        # Simple response without Ollama
+        response = "You entered: " + question
 
-            st.write(response["message"]["content"])
         list.append({
             "role": "assistant",
-            "content": response["message"]["content"]
+            "content": response
         })
+
+        with st.chat_message("assistant"):
+            st.write(response)
+
 if st.button("Exit"):
     st.session_state.list = []
     st.info("Exiting the chat...")
